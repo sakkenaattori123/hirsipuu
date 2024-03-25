@@ -1,6 +1,7 @@
-const input = document.querySelector('input')
-const output = document.querySelector('output')
-const span = document.querySelector('span')
+const input= document.querySelector('input')
+const output= document.querySelector('output')
+const span= document.querySelector('span')
+
 
 const words = [
     "kerava",
@@ -19,50 +20,54 @@ const words = [
 
 let randomizedWord = ''
 let maskedWord = ''
-let quesscount = 0
-let yritykset = 0
+let guessCount = 0
 
 const newGame = () => {
     const random = Math.floor(Math.random() * 10) + 1
     randomizedWord = words[random]
     maskedWord = "*".repeat(randomizedWord.length)
-    yritykset = 0
     console.log(randomizedWord)
     output.innerHTML = maskedWord
+    guessCount = 0
+    span.textContent = guessCount
 }
 
 const win = () => {
-    alert(`You have quessed right, the word is ${randomizedWord}. It took ${yritykset} tries to get it right.`)
+    alert(`You have guessed right, the word is ${randomizedWord} and it took ${guessCount} tries`)
+    newGame()
 }
 
-const replaceFoundChars = (quess) => {
+const replaceFoundChars = (guess) => {
     for (let i = 0;i<randomizedWord.length;i++) {
         const char = randomizedWord.substring(i,i+1)
-        if (char === quess) {
+        if (char === guess) {
             let newString = maskedWord.split('')
-            newString.splice(i,1,quess)
+            newString.splice(i,1,guess)
             newString = newString.join('')
-            maskedWord= newString
-        }}
+            maskedWord = newString
+        }
     }
     output.innerHTML = maskedWord
+}
 
 newGame()
 
-input.addEventListener('keypress', (e) => {
+input.addEventListener('keypress',(e) => {
     if (e.key === 'Enter') {
         e.preventDefault()
 
-        const quess = input.value
-        if (quess.toLowerCase() === randomizedWord.toLocaleLowerCase()) {
+        const guess = input.value
+        guessCount++
+        span.innerHTML = guessCount
+        if (guess.toLowerCase() === randomizedWord.toLowerCase()) {
             win()
-        } else if (quess.length === 1) {
-            replaceFoundChars(quess)
-          if (maskedWord.toLocaleLowerCase() === randomizedWord.toLocaleLowerCase()) {
-            win()
-          }
+        } else if (guess.length === 1) {
+            replaceFoundChars(guess)
+            if (maskedWord.toLocaleLowerCase() === randomizedWord.toLocaleLowerCase()) {
+                win()
+            }
         } else {
-            alert(`You quessed wrong!`)
+            alert("You guessed wrong")
         }
         input.value=''
     }
